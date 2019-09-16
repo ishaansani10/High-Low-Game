@@ -1,0 +1,362 @@
+// HIGH LOW GAME....!!!!
+
+
+  #include<conio.h>
+ #include<stdlib.h>
+ #include<process.h>
+ #include<dos.h>
+ #include<math.h>
+ #include<string.h>
+ #include<fstream.h>
+ #include<stdio.h>
+
+ class game
+ { int gscore;
+ char gname[20];
+ int grno;
+ public:
+
+  game()
+ { grno=0;
+ gscore=0;
+ strcpy(gname,"   ");
+   }
+
+  ~game()
+ { cout<<" Destructor Working "; }
+
+ char* getname()
+  { return gname; }
+
+  int getgrno()
+  { return grno; }
+
+     void getdata()
+    { cout<<" Enter Your Roll NO. "<<'\n';
+    cin>>grno;
+    cout<<" Enter Your Name :- "<<'\n';
+    gets(gname);
+      }
+    void showdata()
+    { cout<<" Roll Number :- "<<grno<<'\n';
+    cout<<" Name :- ";
+    puts(gname);
+    cout<<"Score- "<<gscore<<'\n'; }
+
+    void getscore(int s)
+    { gscore=s;cout<<gscore<<s;getch();}
+
+    };
+
+///////////////////////////////////////////////////////////////////////////////
+
+  void create()
+  { char ans;
+  ofstream mf;
+  mf.open("game.dat",ios::binary);
+
+  if(!mf)
+  { cout<<" STREAM NOT FOUND ";
+  exit(0); }
+
+  game g;
+  do{ g.getdata();
+
+  mf.write((char*)&g,sizeof(g));
+  cout<<" WANT TO ENTER MORE RECORDS ?";
+  cin>>ans;}while(ans=='Y'||ans=='y');
+  mf.close(); }
+
+///////////////////////////////////////////////////////////////////////////////
+
+  void display()
+  { ifstream mf;
+  mf.open("game.dat",ios::binary);
+
+  if(!mf)
+  {cout<<" STREAM NOT FOUND ";
+  exit(0);}
+
+  game g;
+  mf.read((char*)&g,sizeof(g));
+
+  while(mf)
+  { g.showdata();
+
+  mf.read((char*)&g,sizeof(g));}
+
+  mf.close();}
+
+///////////////////////////////////////////////////////////////////////////////
+
+ void search1()
+   /* Details By Searching Through Roll Number*/
+  {
+  ifstream mf;
+  mf.open("game.dat",ios::binary);
+  if(!mf)
+  { cout<<"Stream Not Found ";
+  exit(0); }
+
+  game g;
+  int num, f=0;
+  cout<<" enter roll number you want to search ";
+  cin>>num;
+
+  mf.read((char*)&g,sizeof(g));
+
+  while(mf && f==0)
+  {
+  if(g.getgrno()==num)
+  { f=1;
+  cout<<" FOUND ";
+  g.showdata();
+  mf.read((char*)&g,sizeof(g));}}
+
+  if(f==0)
+  cout<<" NOT FOUND ";
+  mf.close(); }
+
+///////////////////////////////////////////////////////////////////////////////
+
+  void search2()
+   /* Details By Searching Through Name  */
+  {
+  char name[20];
+  cout<<" Enter Name You Want To Search ";
+  gets(name);
+
+  game g;
+  ifstream mf;
+  mf.open("game.dat",ios::binary);
+  if(!mf)
+  { cout<<" Stream Not Found ";
+  exit(0); }
+  int f=0;
+  mf.read((char*)&g,sizeof(g));
+  while(mf && f==0)
+  {
+  if(strcmpi(name,g.getname())==0)
+  { f=1;
+   g.showdata();
+   mf.read((char*)&g,sizeof(g)); }}
+
+   if(f==0)
+   cout<<" Not Found ";
+   mf.close(); }
+
+///////////////////////////////////////////////////////////////////////////////
+
+ void update(int num,int s)
+ { fstream mff;          
+
+mff.open("game.dat",ios::binary|ios::in|ios::out);
+ game g;
+ int f=0;
+ cout<<"in update, s="<<s;getch();
+ if(!mff)
+ { cout<<" Stream Not Found ";
+ exit(0); }
+
+ while(mff && f==0)
+ { mff.read((char*)&g,sizeof(g));
+
+if(num==g.getgrno())
+ { cout<<"matched";getch(); long pos =mff.tellg();
+ mff.seekg(pos-sizeof(g),ios::beg);
+
+ g.getscore(s);
+ mff.write((char*)&g,sizeof(g));
+f=1;}
+}
+ if(f==0)
+ cout<<" Not Found";
+ else
+ cout<<"Updated";
+ mff.close(); }
+
+///////////////////////////////////////////////////////////////////////////////
+
+ void menu()
+ {
+cout<<"\n\t\t\t******************************"<<"\n\t\t\t******************************";
+
+ cout<<"\n\t\t\t**                          **"<<"\n\t\t\t** Welcome To High/Low Game **"<<"\n\t\t\t** ________________________ **";
+ cout<<"\n\t\t\t**                          **"<<"\n\t\t\t******************************"<<"\n\t\t\t******************************";
+ cout<<"\n\n\n\n------------"<<"\n Main  Menu"<<"\n------------"<<"\n\n\n 1.Rules\n\n 2.Play\n\n 3.Exit"<<"\n\n Enter your choice(1-3):";
+ getch();}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ void rules()
+ {    cout<<"\n\n---------------------"<<"\n General Description"<<"\n---------------------";
+    cout<<"\n\n1.The Computer picks a random number according to the limit you enter.\n  You must try to guess the number.";
+    cout<<"\n\n2.The Computer ask you to enter your guess. You have various chances to guess the number\n chances will be allotted according to the range you entered.";
+  cout<<"\n\n3.The computer checks the number, if your guess is\n  less than computer's number than it will show a message\n  that your guess is low and ask for higher number.";
+    cout<<"\n\n4.If your guess is higher than the computer's number\n  than computer will show a message that your guess is high and\n  ask for lower number.";
+    cout<<"\n\n5.If your guess is equal to the computer's number,than\n  computer will print a message congratulating you\n  and will ask you to play the game again or exit.";
+    cout<<"\n\n6.If you are unable to guess the number than the computer\n  will a sorry message and ask you to play the game again or exit.";
+   cout<<"\n\n\n  Press * to goto Main Menu:";   }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+int scorre( int count, int high)
+{
+ int score=0;
+ score=(100/high)*(count);
+cout<<"in scorre ,score="<<score;getch();
+ return score;}
+
+///////////////////////////////////////////////////////////////////////////////
+ void main()
+ {
+ textbackground(WHITE);
+ textcolor(BLUE);
+  clrscr(); int h;
+ game g;
+
+ char ch,*a,ch2,z;
+
+ int ch1,c=0;
+
+ int guess,count,high;
+
+ create();
+ do{
+ menu();
+
+ cin>>ch1;
+
+ switch(ch1)
+ {
+ case 1:
+ {
+ clrscr();
+ rules();
+ cin>>ch2;
+ if(ch2=='*')
+ menu();
+else
+rules();
+break;
+
+ case 2:
+  {
+   clrscr();
+   for(int i=0;i<=100;i+=20)
+   {
+    cout<<"Loading......."<<i<<"%\r";
+    sleep(1);
+   }
+   cout<<"\n\nHi "<<a<<".........!!!!";
+
+   do{ if(c>0)
+   clrscr();
+ cout<<"Enter the no till where you want guess"<<"\n";
+   int n;
+ cin>>n;
+   randomize();
+   int  rnum=rand()%n+1;
+   cout<<"\n\nEnter Your Guess:";
+   cin>>guess;
+   count=log(n)/log(2);
+    int high=count;
+   while(guess!=rnum)
+   {
+    if(guess>rnum)
+    {
+    count--;
+     cout<<"\n\n"<<guess<<" is High....!!!!\a\a"<<"\n\nNow You Have  
+     "<<count<<" chance left";
+     if(count==0)
+     break;
+     cout<<"\n\nEnter Your Guess Again:";
+     cin>>guess;
+       }
+   else if(guess<rnum)
+    {
+    count--;
+     cout<<"\n\n"<<guess<<" is Low...!!!\a\a"<<"\n\nNow You Have
+    "<<count<<" chance left";
+     if(count==0)
+      break;
+     cout<<"\n\nEnter Your Guess Again:";
+     cin>>guess;
+    }
+   }
+   if(guess==rnum)
+   {
+    h=scorre(count,high);
+    cout<<"\n\n\t\tCongratulation "<<a<<" You Have Done IT.......!!!!!\a\a";
+    cout<<"Score is "<<h<<"\n";
+   }
+
+   else
+
+  {  cout<<"\n\n\t\tSorry "<<a<<" Bad Luck......!!! Try Next Time\a\a\a"<<'\n';
+    cout<<"Random no generated was"<<rnum<<"\n"; }
+   cout<<"\n\nWant to Play More(y/n):";
+   cin>>ch; }while(ch=='y' || ch=='Y');
+
+   c++;
+
+     cout<<"\n\n\n\n\t\t\t    @@@@@@@@ THANK YOU @@@@@@@@   \n\n";
+     cout<<"================================================================================";
+
+     cout<<"\a\a\n\n\t\t\t\t Special Thanks To\n\t\t\t\t___________________\n\n\t\t\t\t  SAPNA GUPTA MA'AM";
+     cout<<"\n\n\n\n\t\t\t\t Game Developed By\n\t\t\t\t___________________\n\n\t\t\t\t  ISHAAN";
+     cout<<"\n\n================================================================================";
+     delay(1000);
+    }
+
+  }
+   break;
+
+ case 3:
+  {
+   cout<<"\n\n\n================================================================================";
+    cout<<"\n\n\t\t\t\t Special Thanks To\n\t\t\t\t___________________\n\n\t\t\t\t  SAPNA GUPTA MA'AM";
+    cout<<"\n\n\n\n\t\t\t\t Game Developed By\n\t\t\t\t___________________\n\n\t\t\t\t  ISHAAN";
+    cout<<"\n\n\n================================================================================";
+
+    delay(100);
+
+  }
+ }
+cout<<"Do You Want To Continue?";
+cin>>z; }while(z=='y'||z=='Y');
+ clrscr();
+   int t;
+   char f;
+
+ do{cout<<"Enter Choice ";
+   cout<<"1.Display"<<'\n';
+   cout<<"2.search through roll number"<<'\n';
+   cout<<"3.search through name"<<'\n';
+   cout<<"4. update"<<'\n';
+   cin>>t;
+
+   switch(t)
+   { case 1 : display();
+	         break;
+
+    case 2 : search1();
+	       break;
+
+    case 3 : search2();
+	       break;
+
+    case 4 :  int num ;
+	     cout<<" enter the roll number whose score you want to update";
+	     cin>>num;
+	     update(num,h);
+	     break;
+
+    default : cout<<" Wrong Choice ";
+	      break; }
+
+   cout<<" Want To Continue ?";
+    cin>>f;}while(f=='y'||f=='Y');
+    getch();   }
+
+///////////////////////////////////////////////////////////////////////////////      
